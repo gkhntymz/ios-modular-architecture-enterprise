@@ -9,6 +9,14 @@ public enum HTTPClientError: Error, Equatable {
     case unacceptableStatusCode(Int)
 }
 
+public enum HTTPMethod: String, Sendable {
+    case get = "GET"
+    case post = "POST"
+    case put = "PUT"
+    case patch = "PATCH"
+    case delete = "DELETE"
+}
+
 public struct URLSessionHTTPClient: HTTPClient {
     private let session: URLSession
 
