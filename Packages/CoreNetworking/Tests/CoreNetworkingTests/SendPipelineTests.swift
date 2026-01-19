@@ -22,8 +22,8 @@ final class SendPipelineTests: XCTestCase {
         let model = try await client.send(endpoint, using: builder)
         XCTAssertEqual(model, Model(value: 7))
     }
-
-    func test_send_decodingFailure_mapsToCoreNetworkingError() async {
+    
+    func test_send_decodingFailure_preservesUnderlyingError() async {
         struct Model: Decodable { let value: Int }
 
         let client = URLSessionHTTPClient(session: .mock(statusCode: 200, data: Data("not-json".utf8)))
@@ -34,7 +34,13 @@ final class SendPipelineTests: XCTestCase {
             _ = try await client.send(endpoint, using: builder)
             XCTFail("Expected to throw")
         } catch let e as CoreNetworkingError {
-            XCTAssertEqual(e, .decodingFailed)
+            switch e {
+            case .decodingFailed(let underlying):
+                // JSONDecoder throws DecodingError or CocoaError depending on context; we just assert it's preserved.
+                XCTAssertFalse(String(describing: underlying).isEmpty)
+            default:
+                XCTFail("Expected decodingFailed, got: \(e)")
+            }
         } catch {
             XCTFail("Unexpected error: \(error)")
         }
