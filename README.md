@@ -34,6 +34,70 @@ We use **Swift Package Manager (SPM)** for modules to:
 - keep modules portable and testable
 - reduce coupling with Xcode project settings
 
+## CoreNetworking
+
+CoreNetworking is a framework-level networking module designed to provide
+a consistent, testable, and debuggable foundation for all network communication
+across the application.
+
+### Architecture
+
+CoreNetworking is built around a small and explicit API surface that clearly
+separates request description, request construction, execution, and response
+decoding.
+
+The primary goal is to ensure that feature modules focus on *what* they want
+to request, not *how* networking is performed.
+
+#### Core abstractions
+
+- **Endpoint<Response>**  
+  Describes an HTTP request together with its expected response type.
+  An endpoint defines the HTTP method, path, headers, query/body parameters,
+  and decoding strategy.
+
+- **RequestBuilder**  
+  Responsible for transforming an `Endpoint` into a concrete `URLRequest`.
+  This centralizes URL construction, headers, and encoding logic in a single place.
+
+- **HTTPClient**  
+  Executes requests and returns decoded responses.
+  The client is agnostic of concrete request details and focuses on execution,
+  validation, and decoding.
+
+#### Execution flow
+
+1. A feature defines an `Endpoint<Response>`
+2. The endpoint is converted into a `URLRequest` via `RequestBuilder`
+3. `HTTPClient` executes the request
+4. The response is validated and decoded into the expected response type
+
+This flow ensures a clear separation of concerns and prevents feature modules
+from duplicating networking logic.
+
+#### Dependency direction
+
+Feature modules depend on CoreNetworking abstractions.
+
+CoreNetworking does **not** depend on feature, domain, or UI layers.
+This guarantees a clean dependency graph and keeps the networking layer
+independent and reusable.
+
+### Error handling
+
+CoreNetworking preserves underlying errors to support debuggability in
+production environments.
+
+Low-level errors (e.g. decoding failures or request construction issues)
+are surfaced without losing context, allowing higher layers to map them
+to user-facing errors without sacrificing diagnostic information.
+
+### Usage
+
+```swift
+let endpoint = LoginEndpoint(...)
+let response = try await client.send(endpoint, using: builder)
+
 ## Testing strategy (baseline)
 - Unit tests per module (fast feedback)
 - Minimal integration tests for critical seams (later)
@@ -47,11 +111,11 @@ Start here:
 - `docs/adr/ADR-001-why-modular-architecture.md`
 
 ## Roadmap
-1. ✅ Project bootstrap (done)
-2. ⬜ README + Architecture Vision
-3. ⬜ ADR-001: Why modular architecture?
-4. ⬜ Introduce first Core module via SPM (CoreNetworking)
-5. ⬜ Introduce first Feature module (Authentication)
+1. ✅ Project bootstrap
+2. ✅ Architecture vision and ADRs
+3. ✅ CoreNetworking (SPM) baseline
+4. ✅ CoreNetworking framework-level architecture
+5. ⬜ First Feature module (Authentication)
 6. ⬜ CI checks on PRs (xcodebuild test)
 
 ## How to run
