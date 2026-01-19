@@ -7,9 +7,9 @@
 
 import Foundation
 
-public enum CoreNetworkingError: Error, Equatable {
-    case requestBuildFailed
-    case decodingFailed
+public enum CoreNetworkingError: Error {
+    case requestBuildFailed(underlying: Error)
+    case decodingFailed(underlying: Error)
 }
 
 public extension HTTPClient {
@@ -21,7 +21,7 @@ public extension HTTPClient {
         do {
             request = try builder.makeRequest(for: endpoint)
         } catch {
-            throw CoreNetworkingError.requestBuildFailed
+            throw CoreNetworkingError.requestBuildFailed(underlying: error)
         }
 
         let (data, response) = try await self.data(for: request)
@@ -29,7 +29,18 @@ public extension HTTPClient {
         do {
             return try endpoint.decode(data, response)
         } catch {
-            throw CoreNetworkingError.decodingFailed
+            throw CoreNetworkingError.decodingFailed(underlying: error)
+        }
+    }
+}
+
+extension CoreNetworkingError: CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case .requestBuildFailed(let underlying):
+            return "CoreNetworkingError.requestBuildFailed(underlying: \(underlying))"
+        case .decodingFailed(let underlying):
+            return "CoreNetworkingError.decodingFailed(underlying: \(underlying))"
         }
     }
 }
