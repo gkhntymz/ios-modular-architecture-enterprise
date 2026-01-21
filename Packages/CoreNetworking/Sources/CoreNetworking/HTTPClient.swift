@@ -65,6 +65,11 @@ public struct URLSessionHTTPClient: HTTPClient {
 
                 return (data, http)
             } catch {
+                // ✅ NEW: let interceptors observe transport/errors too
+                if let pipeline = interceptorPipeline {
+                    await pipeline.processError(error, context: context)
+                }
+
                 guard let policy = retryPolicy else { throw error }
 
                 let retryContext = RetryContext(
