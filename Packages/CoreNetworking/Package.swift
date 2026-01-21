@@ -13,9 +13,15 @@ let package = Package(
             targets: ["CoreNetworking"]
         ),
     ],
+    dependencies: [
+        .package(path: "../CoreLogging")
+    ],
     targets: [
         .target(
-            name: "CoreNetworking"
+            name: "CoreNetworking",
+            dependencies: [
+                "CoreLogging"
+            ]
         ),
         .testTarget(
             name: "CoreNetworkingTests",
