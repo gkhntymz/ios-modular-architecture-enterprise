@@ -20,7 +20,6 @@ public enum HTTPMethod: String, Sendable {
 public struct URLSessionHTTPClient: HTTPClient {
     private let session: URLSession
     private let interceptorPipeline: InterceptorPipeline?
-
     private let retryPolicy: (any RetryPolicy)?
 
     public init(
@@ -34,14 +33,15 @@ public struct URLSessionHTTPClient: HTTPClient {
     }
 
     public func data(for request: URLRequest) async throws -> (Data, HTTPURLResponse) {
-        let context = InterceptorContext()
+        let baseContext = InterceptorContext()
         let method = HTTPMethod(rawValue: request.httpMethod ?? "GET") ?? .get
 
         var attempt = 1
-        var lastError: Error?
 
         while true {
             try Task.checkCancellation()
+
+            let context = baseContext.withAttempt(attempt)
 
             do {
                 var interceptedRequest = request
@@ -65,16 +65,13 @@ public struct URLSessionHTTPClient: HTTPClient {
 
                 return (data, http)
             } catch {
-                lastError = error
-
-                // Decide retry
                 guard let policy = retryPolicy else { throw error }
 
                 let retryContext = RetryContext(
                     attempt: attempt,
                     method: method,
                     url: request.url,
-                    requestID: context.requestID
+                    requestID: baseContext.requestID
                 )
 
                 switch policy.decision(for: error, context: retryContext) {
@@ -83,7 +80,6 @@ public struct URLSessionHTTPClient: HTTPClient {
                 case .retry(let delay):
                     attempt += 1
                     try Task.checkCancellation()
-                    // Sleep expects nanoseconds
                     let nanos = UInt64(max(0, delay) * 1_000_000_000)
                     try await Task.sleep(nanoseconds: nanos)
                     continue
