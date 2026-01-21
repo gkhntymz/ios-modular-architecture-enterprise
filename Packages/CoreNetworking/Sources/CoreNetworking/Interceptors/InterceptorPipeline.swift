@@ -34,4 +34,11 @@ public struct InterceptorPipeline: Sendable {
             try await interceptor.intercept(response, data: data, context: context)
         }
     }
+    
+    public func processError(_ error: Error, context: InterceptorContext) async {
+        for interceptor in interceptors {
+            await interceptor.intercept(error, context: context)
+        }
+    }
 }
+
