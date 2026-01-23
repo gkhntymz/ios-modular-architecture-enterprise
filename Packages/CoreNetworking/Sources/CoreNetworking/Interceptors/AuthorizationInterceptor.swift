@@ -8,25 +8,30 @@
 import Foundation
 
 public struct AuthorizationInterceptor: RequestInterceptor {
-    private let tokenProvider: @Sendable () async throws -> String
+    public typealias TokenProvider = @Sendable () async -> String?
 
-    public init(tokenProvider: @escaping @Sendable () async throws -> String) {
+    private let tokenProvider: TokenProvider
+
+    public init(tokenProvider: @escaping TokenProvider) {
         self.tokenProvider = tokenProvider
     }
 
-    public func intercept(
-        _ request: URLRequest,
-        context: InterceptorContext
-    ) async throws -> URLRequest {
-        var r = request
-        let token = try await tokenProvider()
-        r.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        return r
+    // REQUIRED by RequestInterceptor
+    public func intercept(_ request: URLRequest, context: InterceptorContext) async throws -> URLRequest {
+        var req = request
+        if let token = await tokenProvider() {
+            req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
+        return req
     }
 
-    public func intercept(
-        _ response: HTTPURLResponse,
-        data: Data,
-        context: InterceptorContext
-    ) async throws { }
+    // REQUIRED by RequestInterceptor (no-op)
+    public func intercept(_ response: HTTPURLResponse, data: Data, context: InterceptorContext) async throws {
+        // no-op
+    }
+
+    // REQUIRED by RequestInterceptor (no-op)
+    public func intercept(_ error: Error, context: InterceptorContext) async {
+        // no-op
+    }
 }
