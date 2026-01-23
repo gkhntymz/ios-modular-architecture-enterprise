@@ -1,5 +1,5 @@
 //
-//  LoginModel.swift
+//  LoginRequest.swift
 //  FeatureAuthentication
 //
 //  Created by Gökhan Taymaz on 19.01.2026.
@@ -15,8 +15,4 @@ public struct LoginRequest: Sendable {
         self.email = email
         self.password = password
     }
-}
-
-public struct LoginResponse: Decodable, Equatable, Sendable {
-    public let accessToken: String
 }
