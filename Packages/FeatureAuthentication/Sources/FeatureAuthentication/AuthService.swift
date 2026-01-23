@@ -8,9 +8,9 @@ import Foundation
 import CoreNetworking
 
 public enum AuthError: Error, Equatable, Sendable {
-    case network(AuthNetworkError)
     case invalidCredentials
-    case unknown
+    case sessionExpired
+    case network(AuthNetworkError)
 }
 
 /// Feature-level, user-facing network error categorization.
