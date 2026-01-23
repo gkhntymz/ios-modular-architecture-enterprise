@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		A70551C32F19004E00A45A21 /* CoreNetworking in Frameworks */ = {isa = PBXBuildFile; productRef = A70551C22F19004E00A45A21 /* CoreNetworking */; };
+		A72207DC2F238294006B67B6 /* FeatureAuthentication in Frameworks */ = {isa = PBXBuildFile; productRef = A72207DB2F238294006B67B6 /* FeatureAuthentication */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,6 +71,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A70551C32F19004E00A45A21 /* CoreNetworking in Frameworks */,
+				A72207DC2F238294006B67B6 /* FeatureAuthentication in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -131,6 +133,7 @@
 			name = EnterpriseApp;
 			packageProductDependencies = (
 				A70551C22F19004E00A45A21 /* CoreNetworking */,
+				A72207DB2F238294006B67B6 /* FeatureAuthentication */,
 			);
 			productName = EnterpriseApp;
 			productReference = A7649A692F17BC7400305512 /* EnterpriseApp.app */;
@@ -216,6 +219,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				A70551C12F19004E00A45A21 /* XCLocalSwiftPackageReference "Packages/CoreNetworking" */,
+				A72207DA2F238294006B67B6 /* XCLocalSwiftPackageReference "Packages/FeatureAuthentication" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = A7649A6A2F17BC7400305512 /* Products */;
@@ -578,12 +582,20 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Packages/CoreNetworking;
 		};
+		A72207DA2F238294006B67B6 /* XCLocalSwiftPackageReference "Packages/FeatureAuthentication" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/FeatureAuthentication;
+		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		A70551C22F19004E00A45A21 /* CoreNetworking */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = CoreNetworking;
+		};
+		A72207DB2F238294006B67B6 /* FeatureAuthentication */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FeatureAuthentication;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

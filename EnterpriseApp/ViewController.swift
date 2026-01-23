@@ -76,6 +76,10 @@ final class ViewController: UIViewController {
                 ))
 
                 print("Login success: token stored")
+                
+                let profile = try await service.me()
+                print("Me success:", profile)
+                
             } catch {
                 print("Auth error:", error)
             }
