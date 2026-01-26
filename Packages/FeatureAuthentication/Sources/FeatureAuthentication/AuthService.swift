@@ -11,6 +11,7 @@ public enum AuthError: Error, Equatable, Sendable {
     case invalidCredentials
     case sessionExpired
     case network(AuthNetworkError)
+    case unknown
 }
 
 /// Feature-level, user-facing network error categorization.
@@ -56,6 +57,22 @@ public struct AuthService: Sendable {
                 throw AuthError.invalidCredentials
             }
             throw AuthError.network(networkErrorMapper.map(e))
+        } catch {
+            throw AuthError.network(networkErrorMapper.map(error))
+        }
+    }
+    
+    public func me() async throws -> ProfileResponse {
+        do {
+            let endpoint = try AuthEndpoints.me()
+            return try await client.send(endpoint, using: builder)
+
+        } catch let e as HTTPClientError {
+            if case .unacceptableStatusCode(let code) = e, code == 401 {
+                throw AuthError.sessionExpired
+            }
+            throw AuthError.network(networkErrorMapper.map(e))
+
         } catch {
             throw AuthError.network(networkErrorMapper.map(error))
         }
