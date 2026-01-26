@@ -21,4 +21,13 @@ enum AuthEndpoints {
             body: body
         )
     }
+    
+    public static func me() throws -> Endpoint<ProfileResponse> {
+        return Endpoint<ProfileResponse>.json(
+            method: .get,
+            path: "/v1/auth/me",
+            headers: ["Content-Type": "application/json"],
+            body: nil
+        )
+    }
 }
