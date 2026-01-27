@@ -1,124 +1,148 @@
 # iOS Modular Architecture (Enterprise)
 
-A portfolio-grade, enterprise-style iOS codebase demonstrating:
-- Feature-based modularization (SPM)
-- Clear dependency boundaries
-- Testability-first design
-- Concurrency correctness
-- Architectural Decision Records (ADRs)
+A portfolio-grade, enterprise-style iOS codebase demonstrating how a
+real-world application can be structured for **scale, testability,
+and long-term maintainability**.
 
-> Goal: provide a realistic foundation for scaling an iOS app and team.
+This repository prioritizes engineering discipline over demo speed.
+
+---
 
 ## Why this repository exists
-Most sample apps optimize for “demo speed”. This repository optimizes for:
+
+Most sample iOS projects optimize for:
+- quick demos
+- minimal setup
+- single-target architectures
+
+This repository optimizes for:
 - maintainability at scale
 - explicit architectural trade-offs
-- clean module boundaries
-- predictable testing strategy
+- strict dependency boundaries
+- predictable and automated testing
+- production-ready CI workflows
+
+The goal is to resemble how an iOS codebase evolves inside a mature
+engineering organization.
+
+---
 
 ## High-level architecture
-**Layers**
-- **App**: composition root, routing bootstrap
-- **Core**: cross-cutting capabilities (Networking, Persistence, Security, Observability, etc.)
-- **Features**: isolated feature modules (Authentication, Subscription, Profile, etc.)
-- **Shared UI** (optional): design system and reusable UI primitives
 
-**Dependency direction (rule)**
-`App → Features → Core`  
-`Core` must not depend on `Features`.  
-`Features` must not depend on each other directly (prefer protocols/events).
+### Layers
+
+- **App**
+  - Composition root
+  - Application lifecycle
+  - Feature wiring and navigation
+  - Owns dependency injection and orchestration
+
+- **Features**
+  - Isolated feature modules (Authentication, Profile, etc.)
+  - Contain UI, state, and feature-specific logic
+  - Do not depend on each other directly
+
+- **Core**
+  - Cross-cutting concerns shared across the system
+  - Examples: Networking, Logging, Observability
+  - Framework-level, reusable abstractions
+
+---
+
+### Dependency flow
+
+The dependency graph follows this direction:
+
+App → Features → Core
+
+- App knows about Features and Core
+- Features know only Core abstractions
+- Core knows only itself
+
+This preserves:
+- clear ownership
+- replaceable implementations
+- testable modules
+
+---
 
 ## Module strategy
-We use **Swift Package Manager (SPM)** for modules to:
-- enforce boundaries via explicit dependencies
-- keep modules portable and testable
-- reduce coupling with Xcode project settings
 
-## CoreNetworking
+All non-App modules are implemented using **Swift Package Manager (SPM)**.
 
-CoreNetworking is a framework-level networking module designed to provide
-a consistent, testable, and debuggable foundation for all network communication
-across the application.
+SPM is used as an **architectural enforcement tool**, not just a packaging system.
 
-### Architecture
+Benefits:
+- explicit dependency declarations
+- strong isolation between modules
+- fast and independent test execution
+- portability outside the Xcode project
 
-CoreNetworking is built around a small and explicit API surface that clearly
-separates request description, request construction, execution, and response
-decoding.
+---
 
-The primary goal is to ensure that feature modules focus on *what* they want
-to request, not *how* networking is performed.
+## Testing strategy
 
-#### Core abstractions
+Testing mirrors the architectural boundaries of the system.
 
-- **Endpoint<Response>**  
-  Describes an HTTP request together with its expected response type.
-  An endpoint defines the HTTP method, path, headers, query/body parameters,
-  and decoding strategy.
+- **Core & Feature modules**
+  - Own their unit tests
+  - Executed via `swift test`
+  - Fast and isolated
 
-- **RequestBuilder**  
-  Responsible for transforming an `Endpoint` into a concrete `URLRequest`.
-  This centralizes URL construction, headers, and encoding logic in a single place.
+- **App target**
+  - Owns composition and integration tests
+  - Validates wiring, orchestration, and error mapping
+  - Minimal business logic
 
-- **HTTPClient**  
-  Executes requests and returns decoded responses.
-  The client is agnostic of concrete request details and focuses on execution,
-  validation, and decoding.
+- **UI tests**
+  - Limited to critical user journeys
+  - Treated as a safety net, not the primary test layer
 
-#### Execution flow
+Detailed rationale:
+- [`docs/adr/ADR-003-testing-strategy-and-ownership.md`](docs/adr/ADR-003-testing-strategy-and-ownership.md)
 
-1. A feature defines an `Endpoint<Response>`
-2. The endpoint is converted into a `URLRequest` via `RequestBuilder`
-3. `HTTPClient` executes the request
-4. The response is validated and decoded into the expected response type
+---
 
-This flow ensures a clear separation of concerns and prevents feature modules
-from duplicating networking logic.
+## Continuous Integration
 
-#### Dependency direction
+This repository uses a **multi-stage GitHub Actions pipeline** designed to
+reflect enterprise iOS workflows.
 
-Feature modules depend on CoreNetworking abstractions.
+CI includes:
+- Swift Package tests (Core & Features)
+- App build verification
+- App unit and UI tests on iOS Simulator
 
-CoreNetworking does **not** depend on feature, domain, or UI layers.
-This guarantees a clean dependency graph and keeps the networking layer
-independent and reusable.
+All CI checks are required before merging into `main`.
 
-### Error handling
+---
 
-CoreNetworking preserves underlying errors to support debuggability in
-production environments.
+## Architecture Decision Records (ADRs)
 
-Low-level errors (e.g. decoding failures or request construction issues)
-are surfaced without losing context, allowing higher layers to map them
-to user-facing errors without sacrificing diagnostic information.
+Significant architectural decisions are documented explicitly to prevent
+knowledge loss and architectural drift.
 
-### Usage
-
-```swift
-let endpoint = LoginEndpoint(...)
-let response = try await client.send(endpoint, using: builder)
-
-## Testing strategy (baseline)
-- Unit tests per module (fast feedback)
-- Minimal integration tests for critical seams (later)
-- CI will run `xcodebuild test` on PRs (planned)
-
-## ADRs
-Architecture decisions are documented in:
+Location:
 - `docs/adr/`
 
-Start here:
-- `docs/adr/ADR-001-why-modular-architecture.md`
+Key ADRs:
+- [`ADR-001`](docs/adr/ADR-001-why-modular-architecture.md): Why Modular Architecture
+- [`ADR-002`](docs/adr/ADR-002-module-dependency-rules-and-enforcement.md): Module Dependency Rules
+- [`ADR-003`](docs/adr/ADR-003-testing-strategy-and-ownership.md): Testing Strategy & Ownership
+- [`ADR-004`](docs/adr/ADR-004-ci-pipeline-and-branch-protection.md): CI Pipeline & Branch Protection
+- [`ADR-007`](docs/adr/ADR-007-logging-and-redaction-strategy.md): Logging & Redaction Strategy
+- [`ADR-008`](docs/adr/ADR-008-dependency-injection-and-composition-root.md): Dependency Injection
+- [`ADR-009`](docs/adr/ADR-009-feature-communication-and-coordination.md): Feature Communication
+- [`ADR-010`](docs/adr/ADR-010-preview-and-demo-app-strategy.md): Preview / Demo App Strategy
 
-## Roadmap
-1. ✅ Project bootstrap
-2. ✅ Architecture vision and ADRs
-3. ✅ CoreNetworking (SPM) baseline
-4. ✅ CoreNetworking framework-level architecture
-5. ⬜ First Feature module (Authentication)
-6. ⬜ CI checks on PRs (xcodebuild test)
+---
 
 ## How to run
-Open `EnterpriseApp.xcodeproj` and run the app target.
 
-git checkout -b test/ci-ruleset
+1. Clone the repository
+2. Open `EnterpriseApp.xcodeproj`
+3. Select a simulator
+4. Run the `EnterpriseApp` scheme
+5. Run tests via:
+   - `⌘U` in Xcode, or
+   - `swift test` for package-level tests
