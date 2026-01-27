@@ -12,12 +12,12 @@ concurrency:
 
 jobs:
   spm-tests:
-    name: SPM tests
+    name: CI / SPM tests
     runs-on: macos-15
     timeout-minutes: 10
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Select Xcode
@@ -46,105 +46,45 @@ jobs:
         run: swift test --package-path Packages/FeatureAuthentication
 
   app-build:
-    name: App build
+    name: CI / App build
     runs-on: macos-15
     timeout-minutes: 10
     needs: spm-tests
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Select Xcode
         run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
 
-      - name: Select available iOS Simulator
-        id: sim
+      - name: Build app (no tests)
         run: |
-          python3 - << 'PY'
-          import json, subprocess, sys, os
-
-          out = subprocess.check_output(
-              ["xcrun", "simctl", "list", "devices", "available", "-j"],
-              text=True
-          )
-          data = json.loads(out)
-
-          devices = []
-          for runtime, devs in data.get("devices", {}).items():
-              for d in devs:
-                  if d.get("isAvailable") and "iPhone" in d.get("name", ""):
-                      devices.append(d)
-
-          if not devices:
-              print("No available iPhone simulator found")
-              sys.exit(1)
-
-          device = devices[0]
-          print(f"Selected simulator: {device['name']} ({device['udid']})")
-
-          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
-              f.write(f"udid={device['udid']}\n")
-          PY
-
-      - name: Build App (no tests)
-        run: |
-          set -o pipefail
           xcodebuild build \
             -project EnterpriseApp.xcodeproj \
             -scheme EnterpriseApp \
-            -destination "id=${{ steps.sim.outputs.udid }}" \
+            -destination "platform=iOS Simulator,name=iPhone 16,OS=18.5" \
             CODE_SIGNING_ALLOWED=NO \
           | xcbeautify
 
   app-tests:
-    name: App tests
+    name: CI / App tests
     runs-on: macos-15
     timeout-minutes: 15
     needs: app-build
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Select Xcode
         run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
 
-      - name: Select available iOS Simulator
-        id: sim
+      - name: Run app tests
         run: |
-          python3 - << 'PY'
-          import json, subprocess, sys, os
-
-          out = subprocess.check_output(
-              ["xcrun", "simctl", "list", "devices", "available", "-j"],
-              text=True
-          )
-          data = json.loads(out)
-
-          devices = []
-          for runtime, devs in data.get("devices", {}).items():
-              for d in devs:
-                  if d.get("isAvailable") and "iPhone" in d.get("name", ""):
-                      devices.append(d)
-
-          if not devices:
-              print("No available iPhone simulator found")
-              sys.exit(1)
-
-          device = devices[0]
-          print(f"Selected simulator: {device['name']} ({device['udid']})")
-
-          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
-              f.write(f"udid={device['udid']}\n")
-          PY
-
-      - name: Run App tests
-        run: |
-          set -o pipefail
           xcodebuild test \
             -project EnterpriseApp.xcodeproj \
             -scheme EnterpriseApp \
-            -destination "id=${{ steps.sim.outputs.udid }}" \
+            -destination "platform=iOS Simulator,name=iPhone 16,OS=18.5" \
             CODE_SIGNING_ALLOWED=NO \
           | xcbeautify
