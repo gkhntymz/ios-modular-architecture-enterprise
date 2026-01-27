@@ -58,12 +58,42 @@ jobs:
       - name: Select Xcode
         run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
 
+      - name: Select available iOS Simulator
+        id: sim
+        run: |
+          python3 - << 'PY'
+          import json, subprocess, sys, os
+
+          out = subprocess.check_output(
+              ["xcrun", "simctl", "list", "devices", "available", "-j"],
+              text=True
+          )
+          data = json.loads(out)
+
+          devices = []
+          for runtime, devs in data.get("devices", {}).items():
+              for d in devs:
+                  if d.get("isAvailable") and "iPhone" in d.get("name", ""):
+                      devices.append(d)
+
+          if not devices:
+              print("No available iPhone simulator found")
+              sys.exit(1)
+
+          device = devices[0]
+          print(f"Selected simulator: {device['name']} ({device['udid']})")
+
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              f.write(f"udid={device['udid']}\n")
+          PY
+
       - name: Build App (no tests)
         run: |
+          set -o pipefail
           xcodebuild build \
             -project EnterpriseApp.xcodeproj \
             -scheme EnterpriseApp \
-            -destination "platform=iOS Simulator,name=iPhone 16,OS=18.6" \
+            -destination "id=${{ steps.sim.outputs.udid }}" \
             CODE_SIGNING_ALLOWED=NO \
           | xcbeautify
 
@@ -80,11 +110,41 @@ jobs:
       - name: Select Xcode
         run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
 
+      - name: Select available iOS Simulator
+        id: sim
+        run: |
+          python3 - << 'PY'
+          import json, subprocess, sys, os
+
+          out = subprocess.check_output(
+              ["xcrun", "simctl", "list", "devices", "available", "-j"],
+              text=True
+          )
+          data = json.loads(out)
+
+          devices = []
+          for runtime, devs in data.get("devices", {}).items():
+              for d in devs:
+                  if d.get("isAvailable") and "iPhone" in d.get("name", ""):
+                      devices.append(d)
+
+          if not devices:
+              print("No available iPhone simulator found")
+              sys.exit(1)
+
+          device = devices[0]
+          print(f"Selected simulator: {device['name']} ({device['udid']})")
+
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              f.write(f"udid={device['udid']}\n")
+          PY
+
       - name: Run App tests
         run: |
+          set -o pipefail
           xcodebuild test \
             -project EnterpriseApp.xcodeproj \
             -scheme EnterpriseApp \
-            -destination "platform=iOS Simulator,name=iPhone 16,OS=18.6" \
+            -destination "id=${{ steps.sim.outputs.udid }}" \
             CODE_SIGNING_ALLOWED=NO \
           | xcbeautify
