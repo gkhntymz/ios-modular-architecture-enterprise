@@ -127,13 +127,16 @@ Location:
 
 Key ADRs:
 - [`ADR-001`](docs/adr/ADR-001-why-modular-architecture.md): Why Modular Architecture
-- [`ADR-002`](docs/adr/ADR-002-module-dependency-rules-and-enforcement.md): Module Dependency Rules
+- [`ADR-002`](docs/adr/ADR-002-module-dependency-rules.md): Module Dependency Rules
 - [`ADR-003`](docs/adr/ADR-003-testing-strategy-and-ownership.md): Testing Strategy & Ownership
-- [`ADR-004`](docs/adr/ADR-004-ci-pipeline-and-branch-protection.md): CI Pipeline & Branch Protection
+- [`ADR-004`](docs/adr/ADR-004-ci-and-branch-protection.md): CI Pipeline & Branch Protection
+- [`ADR-005`](docs/adr/ADR-005-swift-package-and-app-test-isolation.md): Swift Package & App Test Isolation
+- [`ADR-006`](docs/adr/ADR-006-networking-error-modeling-and-mapping-strategy.md): Networking Error Modeling & Mapping
 - [`ADR-007`](docs/adr/ADR-007-logging-and-redaction-strategy.md): Logging & Redaction Strategy
-- [`ADR-008`](docs/adr/ADR-008-dependency-injection-and-composition-root.md): Dependency Injection
-- [`ADR-009`](docs/adr/ADR-009-feature-communication-and-coordination.md): Feature Communication
-- [`ADR-010`](docs/adr/ADR-010-preview-and-demo-app-strategy.md): Preview / Demo App Strategy
+- [`ADR-008`](docs/adr/ADR-008-dependency-injection-and-composition-root.md): Dependency Injection & Composition Root
+- [`ADR-009`](docs/adr/ADR-009-feature-communication-and-coordination.md): Feature Communication & Coordination
+- [`ADR-010`](docs/adr/ADR-010-preview-demo-app-strategy.md): Preview / Demo App Strategy
+
 
 ---
 
