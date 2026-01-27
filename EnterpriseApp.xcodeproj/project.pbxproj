@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		A70551C32F19004E00A45A21 /* CoreNetworking in Frameworks */ = {isa = PBXBuildFile; productRef = A70551C22F19004E00A45A21 /* CoreNetworking */; };
 		A72207DC2F238294006B67B6 /* FeatureAuthentication in Frameworks */ = {isa = PBXBuildFile; productRef = A72207DB2F238294006B67B6 /* FeatureAuthentication */; };
+		A7E47DE22F28B29A00F36631 /* CoreNetworking in Frameworks */ = {isa = PBXBuildFile; productRef = A7E47DE12F28B29A00F36631 /* CoreNetworking */; };
+		A7E47DE42F28B2A900F36631 /* FeatureAuthentication in Frameworks */ = {isa = PBXBuildFile; productRef = A7E47DE32F28B2A900F36631 /* FeatureAuthentication */; };
+		A7E47DE62F28B2AE00F36631 /* CoreNetworking in Frameworks */ = {isa = PBXBuildFile; productRef = A7E47DE52F28B2AE00F36631 /* CoreNetworking */; };
+		A7E47DE82F28B2B100F36631 /* FeatureAuthentication in Frameworks */ = {isa = PBXBuildFile; productRef = A7E47DE72F28B2B100F36631 /* FeatureAuthentication */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -79,6 +83,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A7E47DE22F28B29A00F36631 /* CoreNetworking in Frameworks */,
+				A7E47DE42F28B2A900F36631 /* FeatureAuthentication in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -86,6 +92,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A7E47DE62F28B2AE00F36631 /* CoreNetworking in Frameworks */,
+				A7E47DE82F28B2B100F36631 /* FeatureAuthentication in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -98,6 +106,7 @@
 				A7649A6B2F17BC7400305512 /* EnterpriseApp */,
 				A7649A822F17BC7500305512 /* EnterpriseAppTests */,
 				A7649A8C2F17BC7500305512 /* EnterpriseAppUITests */,
+				A7E47DE02F28B29A00F36631 /* Frameworks */,
 				A7649A6A2F17BC7400305512 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -110,6 +119,13 @@
 				A7649A892F17BC7500305512 /* EnterpriseAppUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		A7E47DE02F28B29A00F36631 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -157,6 +173,8 @@
 			);
 			name = EnterpriseAppTests;
 			packageProductDependencies = (
+				A7E47DE12F28B29A00F36631 /* CoreNetworking */,
+				A7E47DE32F28B2A900F36631 /* FeatureAuthentication */,
 			);
 			productName = EnterpriseAppTests;
 			productReference = A7649A7F2F17BC7500305512 /* EnterpriseAppTests.xctest */;
@@ -180,6 +198,8 @@
 			);
 			name = EnterpriseAppUITests;
 			packageProductDependencies = (
+				A7E47DE52F28B2AE00F36631 /* CoreNetworking */,
+				A7E47DE72F28B2B100F36631 /* FeatureAuthentication */,
 			);
 			productName = EnterpriseAppUITests;
 			productReference = A7649A892F17BC7500305512 /* EnterpriseAppUITests.xctest */;
@@ -595,6 +615,26 @@
 		};
 		A72207DB2F238294006B67B6 /* FeatureAuthentication */ = {
 			isa = XCSwiftPackageProductDependency;
+			productName = FeatureAuthentication;
+		};
+		A7E47DE12F28B29A00F36631 /* CoreNetworking */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A70551C12F19004E00A45A21 /* XCLocalSwiftPackageReference "Packages/CoreNetworking" */;
+			productName = CoreNetworking;
+		};
+		A7E47DE32F28B2A900F36631 /* FeatureAuthentication */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A72207DA2F238294006B67B6 /* XCLocalSwiftPackageReference "Packages/FeatureAuthentication" */;
+			productName = FeatureAuthentication;
+		};
+		A7E47DE52F28B2AE00F36631 /* CoreNetworking */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A70551C12F19004E00A45A21 /* XCLocalSwiftPackageReference "Packages/CoreNetworking" */;
+			productName = CoreNetworking;
+		};
+		A7E47DE72F28B2B100F36631 /* FeatureAuthentication */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A72207DA2F238294006B67B6 /* XCLocalSwiftPackageReference "Packages/FeatureAuthentication" */;
 			productName = FeatureAuthentication;
 		};
 /* End XCSwiftPackageProductDependency section */
