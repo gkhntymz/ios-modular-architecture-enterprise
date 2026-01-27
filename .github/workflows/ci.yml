@@ -21,11 +21,10 @@ jobs:
         run: xcodebuild -version
 
       - name: Run unit tests (App)
-        run: |
-          xcodebuild test \
+        run: xcodebuild test \
             -project EnterpriseApp.xcodeproj \
             -scheme EnterpriseApp \
-            -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+            -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.6' \
             CODE_SIGNING_ALLOWED=NO
 
       - name: Run SPM tests (CoreNetworking)
