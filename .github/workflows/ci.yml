@@ -6,22 +6,39 @@ on:
   pull_request:
     branches: [ main ]
 
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PROJECT: EnterpriseApp.xcodeproj
+  SCHEME: EnterpriseApp
+  DESTINATION: 'platform=iOS Simulator,name=iPhone 16,OS=18.6'
+
 jobs:
-  test:
+  spm-tests:
+    name: SPM tests
     runs-on: macos-15
+    timeout-minutes: 15
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Select Xcode
-        run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: "16.4"
 
-      - name: Xcode version
-        run: xcodebuild -version
-
-      - name: Run unit tests (App)
-        run: xcodebuild test -project EnterpriseApp.xcodeproj -scheme EnterpriseApp -destination "platform=iOS Simulator,name=iPhone 16,OS=18.6" CODE_SIGNING_ALLOWED=NO
+      - name: Cache SwiftPM
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/Library/Caches/org.swift.swiftpm
+            ~/.swiftpm
+          key: ${{ runner.os }}-swiftpm-${{ hashFiles('**/Package.resolved', '**/Package.swift') }}
+          restore-keys: |
+            ${{ runner.os }}-swiftpm-
 
       - name: Run SPM tests (CoreNetworking)
         run: swift test --package-path Packages/CoreNetworking
@@ -31,3 +48,83 @@ jobs:
 
       - name: Run SPM tests (FeatureAuthentication)
         run: swift test --package-path Packages/FeatureAuthentication
+
+  app-build:
+    name: App build
+    runs-on: macos-15
+    timeout-minutes: 15
+    needs: spm-tests
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: "16.4"
+
+      - name: Install xcbeautify
+        run: brew install xcbeautify
+
+      - name: Cache DerivedData + SwiftPM
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/Library/Developer/Xcode/DerivedData
+            ~/Library/Caches/org.swift.swiftpm
+            ~/.swiftpm
+          key: ${{ runner.os }}-xcode-${{ env.SCHEME }}-${{ hashFiles('**/Package.resolved', '**/*.xcodeproj/project.pbxproj', '**/*.xcworkspace/contents.xcworkspacedata') }}
+          restore-keys: |
+            ${{ runner.os }}-xcode-${{ env.SCHEME }}-
+            ${{ runner.os }}-xcode-
+
+      - name: Build (Debug)
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project "${PROJECT}" \
+            -scheme "${SCHEME}" \
+            -destination "${DESTINATION}" \
+            CODE_SIGNING_ALLOWED=NO \
+          | xcbeautify
+
+  app-tests:
+    name: App tests
+    runs-on: macos-15
+    timeout-minutes: 25
+    needs: app-build
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: "16.4"
+
+      - name: Install xcbeautify
+        run: brew install xcbeautify
+
+      - name: Cache DerivedData + SwiftPM
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/Library/Developer/Xcode/DerivedData
+            ~/Library/Caches/org.swift.swiftpm
+            ~/.swiftpm
+          key: ${{ runner.os }}-xcode-${{ env.SCHEME }}-${{ hashFiles('**/Package.resolved', '**/*.xcodeproj/project.pbxproj', '**/*.xcworkspace/contents.xcworkspacedata') }}
+          restore-keys: |
+            ${{ runner.os }}-xcode-${{ env.SCHEME }}-
+            ${{ runner.os }}-xcode-
+
+      - name: Run unit tests (App)
+        run: |
+          set -o pipefail
+          xcodebuild test \
+            -project "${PROJECT}" \
+            -scheme "${SCHEME}" \
+            -destination "${DESTINATION}" \
+            CODE_SIGNING_ALLOWED=NO \
+          | xcbeautify
