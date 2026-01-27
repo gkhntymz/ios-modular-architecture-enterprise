@@ -120,3 +120,5 @@ Start here:
 
 ## How to run
 Open `EnterpriseApp.xcodeproj` and run the app target.
+
+git checkout -b test/ci-ruleset
