@@ -6,9 +6,15 @@ on:
   pull_request:
     branches: [ main ]
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  test:
+  spm-tests:
+    name: SPM tests
     runs-on: macos-15
+    timeout-minutes: 10
 
     steps:
       - name: Checkout
@@ -20,17 +26,65 @@ jobs:
       - name: Xcode version
         run: xcodebuild -version
 
-      - name: List available simulators
-        run: xcrun simctl list devices available
+      - name: Cache SwiftPM
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.swiftpm
+            ~/Library/Caches/org.swift.swiftpm
+          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-spm-
 
-      - name: Run unit tests (App)
-        run: xcodebuild test -project EnterpriseApp.xcodeproj -scheme EnterpriseApp -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' CODE_SIGNING_ALLOWED=NO
-
-      - name: Run SPM tests (CoreNetworking)
+      - name: Run CoreNetworking tests
         run: swift test --package-path Packages/CoreNetworking
 
-      - name: Run SPM tests (CoreLogging)
+      - name: Run CoreLogging tests
         run: swift test --package-path Packages/CoreLogging
 
-      - name: Run SPM tests (FeatureAuthentication)
+      - name: Run FeatureAuthentication tests
         run: swift test --package-path Packages/FeatureAuthentication
+
+  app-build:
+    name: App build
+    runs-on: macos-15
+    timeout-minutes: 10
+    needs: spm-tests
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+
+      - name: Build App (no tests)
+        run: |
+          xcodebuild build \
+            -project EnterpriseApp.xcodeproj \
+            -scheme EnterpriseApp \
+            -destination "platform=iOS Simulator" \
+            CODE_SIGNING_ALLOWED=NO \
+          | xcbeautify
+
+  app-tests:
+    name: App tests
+    runs-on: macos-15
+    timeout-minutes: 15
+    needs: app-build
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+
+      - name: Run App tests
+        run: |
+          xcodebuild test \
+            -project EnterpriseApp.xcodeproj \
+            -scheme EnterpriseApp \
+            -destination "platform=iOS Simulator" \
+            CODE_SIGNING_ALLOWED=NO \
+          | xcbeautify
