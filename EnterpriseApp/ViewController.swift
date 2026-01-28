@@ -6,83 +6,36 @@
 //
 
 import UIKit
-import CoreNetworking
 import FeatureAuthentication
-import CoreLogging
 
 final class ViewController: UIViewController {
+    
+    private let authFeature = AuthenticationFeatureFactory.make()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
-        //let logger = ConsoleLogger()
-        let logger = OSLogLogger(
-            subsystem: Bundle.main.bundleIdentifier ?? "ios-modular-enterprise",
-            category: "networking",
-            minimumLevel: .info
-        )
-        
-//        let pipeline = InterceptorPipeline([
-//            RequestIDInterceptor(),
-//            LoggingInterceptor(logger: logger),
-//            MetricsInterceptor(metrics: metrics),
-//            AuthorizationInterceptor(tokenProvider: { "demo-token" })
-//        ])
+        setupUI()
+    }
+    
+    private func setupUI() {
+        view.backgroundColor = .systemBackground
 
-        
-        // 1) Interceptors (cross-cutting concerns)
-        let metrics = ConsoleMetricsSink()
-        let tokenStore = InMemoryTokenStore()
+        let button = UIButton(type: .system)
+        button.setTitle("Start Authentication", for: .normal)
+        button.addTarget(self, action: #selector(didTapAuth), for: .touchUpInside)
 
-        let pipeline = InterceptorPipeline([
-            RequestIDInterceptor(),
-            LoggingInterceptor(logger: logger),
-            MetricsInterceptor(metrics: metrics),
-            AuthorizationInterceptor(tokenProvider: { await tokenStore.read()?.accessToken })
+        button.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(button)
+
+        NSLayoutConstraint.activate([
+            button.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            button.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
-
-        // 2) Retry policy (resilience)
-        let retryPolicy = ExponentialBackoffRetryPolicy(
-            maxAttempts: 3,
-            baseDelay: 0.25,
-            maxDelay: 2.0
-        )
-
-        // 3) HTTP client wired with pipeline + retry
-        let client = URLSessionHTTPClient(
-            interceptorPipeline: pipeline,
-            retryPolicy: retryPolicy
-        )
-
-        // 4) Feature service
-        let service = AuthService(
-            client: client,
-            builder: RequestBuilder(baseURL: URL(string: "https://api.example.com")!),
-            networkErrorMapper: AuthNetworkErrorMapper { error in
-                AuthNetworkError.from(AppNetworkError.map(error))
-            }
-        )
-
-        // 5)call
-        Task {
-            do {
-                let response = try await service.login(.init(email: "a@b.com", password: "x"))
-
-                await tokenStore.write(.init(
-                    accessToken: response.accessToken,
-                    refreshToken: response.refreshToken,
-                    expiresAt: response.expiresIn.map { Date().addingTimeInterval(TimeInterval($0)) }
-                ))
-
-                print("Login success: token stored")
-                
-                let profile = try await service.me()
-                print("Me success:", profile)
-                
-            } catch {
-                print("Auth error:", error)
-            }
-        }
+    }
+    
+    @objc private func didTapAuth() {
+        authFeature.startAuthentication()
     }
 }
+
