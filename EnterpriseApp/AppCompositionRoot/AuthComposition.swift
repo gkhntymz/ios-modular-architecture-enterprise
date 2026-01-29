@@ -12,7 +12,7 @@ import CoreLogging
 
 enum AuthComposition {
 
-    static func makeAuthFeature() -> AuthenticationFeature {
+    static func makeAuthFeature(output: AuthenticationOutput = .init()) -> AuthenticationFeature {
         // 1) Logging
         let logger = OSLogLogger(
             subsystem: Bundle.main.bundleIdentifier ?? "ios-modular-enterprise",
@@ -58,7 +58,10 @@ enum AuthComposition {
             }
         )
 
-        return AuthenticationFeatureFactory.make(dependencies: deps)
+        return AuthenticationFeatureFactory.make(
+            dependencies: deps,
+            output: output
+        )
     }
 
     // MARK: - App-level error mapping
