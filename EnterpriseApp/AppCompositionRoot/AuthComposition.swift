@@ -12,7 +12,7 @@ import CoreLogging
 
 enum AuthComposition {
 
-    static func makeAuthFeature() -> AuthenticationFeature {
+    static func makeAuthFeature(coordinator: AuthCoordinating) -> AuthenticationFeature {
         // 1) Logging
         let logger = OSLogLogger(
             subsystem: Bundle.main.bundleIdentifier ?? "ios-modular-enterprise",
@@ -57,8 +57,20 @@ enum AuthComposition {
                 Self.mapNetworkError(error)
             }
         )
+        
+        let output = AuthenticationOutput(
+            onAuthenticated: { [weak coordinator] in
+                coordinator?.handleAuthenticated()
+            },
+            onLogout: { [weak coordinator] in
+                coordinator?.handleLogout()
+            }
+        )
 
-        return AuthenticationFeatureFactory.make(dependencies: deps)
+        return AuthenticationFeatureFactory.make(
+            dependencies: deps,
+            output: output
+        )
     }
 
     // MARK: - App-level error mapping

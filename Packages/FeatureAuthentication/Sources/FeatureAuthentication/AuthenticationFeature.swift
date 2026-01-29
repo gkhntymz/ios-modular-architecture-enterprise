@@ -6,5 +6,6 @@
 //
 
 public protocol AuthenticationFeature {
-    func startAuthentication() async
+    func login(_ request: LoginRequest) async throws
+    func logout()
 }

@@ -8,26 +8,28 @@
 import Foundation
 import CoreLogging
 
-final class DefaultAuthenticationFeature: AuthenticationFeature {
+public final class DefaultAuthenticationFeature: AuthenticationFeature {
     private let service: AuthService
-    private let logger: any Logger
+    private let logger: Logger
+    private let output: AuthenticationOutput
 
-    init(service: AuthService, logger: any Logger) {
+    public init(service: AuthService, logger: Logger, output: AuthenticationOutput = .init()) {
         self.service = service
         self.logger = logger
+        self.output = output
     }
 
-    func startAuthentication() async {
-        logger.info("AuthFeature started")
+    public func login(_ request: LoginRequest) async throws {
+        let response = try await service.login(request)
 
-        do {
-            let response = try await service.login(.init(email: "a@b.com", password: "x"))
-            logger.info("Login success: \(response.accessToken)")
+        // token store vs. burada yapılacaksa burada kalsın (VC'den çıkarmış olacağız)
 
-            let me = try await service.me()
-            logger.info("Me success: \(me)")
-        } catch {
-            logger.error("Auth error: \(String(describing: error))")
-        }
+        output.onAuthenticated?()   // ⭐ event burada
+        logger.info("Authenticated")
+    }
+
+    public func logout() {
+        output.onLogout?()
+        logger.info("Logged out")
     }
 }

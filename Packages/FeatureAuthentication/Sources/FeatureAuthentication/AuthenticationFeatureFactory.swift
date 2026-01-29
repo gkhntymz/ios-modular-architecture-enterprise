@@ -11,14 +11,24 @@
 import Foundation
 import CoreNetworking
 import CoreLogging
+
 public enum AuthenticationFeatureFactory {
-    public static func make(dependencies deps: AuthenticationFeatureDependencies) -> AuthenticationFeature {
+
+    public static func make(
+        dependencies deps: AuthenticationFeatureDependencies,
+        output: AuthenticationOutput = .init()
+    ) -> AuthenticationFeature {
+
         let service = AuthService(
             client: deps.client,
             builder: deps.requestBuilder,
             networkErrorMapper: AuthNetworkErrorMapper(map: deps.mapNetworkError)
         )
 
-        return DefaultAuthenticationFeature(service: service, logger: deps.logger)
+        return DefaultAuthenticationFeature(
+            service: service,
+            logger: deps.logger,
+            output: output
+        )
     }
 }
