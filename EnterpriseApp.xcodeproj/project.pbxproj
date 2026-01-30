@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		A70551C32F19004E00A45A21 /* CoreNetworking in Frameworks */ = {isa = PBXBuildFile; productRef = A70551C22F19004E00A45A21 /* CoreNetworking */; };
+		A71E9B832F2C992000E5DF1B /* CoreNetworking in Frameworks */ = {isa = PBXBuildFile; productRef = A71E9B822F2C992000E5DF1B /* CoreNetworking */; };
+		A71E9B852F2C992300E5DF1B /* FeatureAuthentication in Frameworks */ = {isa = PBXBuildFile; productRef = A71E9B842F2C992300E5DF1B /* FeatureAuthentication */; };
+		A71E9B872F2C992500E5DF1B /* CoreLogging in Frameworks */ = {isa = PBXBuildFile; productRef = A71E9B862F2C992500E5DF1B /* CoreLogging */; };
 		A72207DC2F238294006B67B6 /* FeatureAuthentication in Frameworks */ = {isa = PBXBuildFile; productRef = A72207DB2F238294006B67B6 /* FeatureAuthentication */; };
 		A79765DC2F28C0E9006EB3FC /* CoreLogging in Frameworks */ = {isa = PBXBuildFile; productRef = A79765DB2F28C0E9006EB3FC /* CoreLogging */; };
 		A79765DE2F28C0F4006EB3FC /* CoreLogging in Frameworks */ = {isa = PBXBuildFile; productRef = A79765DD2F28C0F4006EB3FC /* CoreLogging */; };
@@ -36,12 +39,20 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		A71E9B5E2F2C8DE800E5DF1B /* DemoApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DemoApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A7649A692F17BC7400305512 /* EnterpriseApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EnterpriseApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A7649A7F2F17BC7500305512 /* EnterpriseAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EnterpriseAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A7649A892F17BC7500305512 /* EnterpriseAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EnterpriseAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		A71E9B712F2C8DE800E5DF1B /* Exceptions for "DemoApp" folder in "DemoApp" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = A71E9B5D2F2C8DE800E5DF1B /* DemoApp */;
+		};
 		A7649A912F17BC7500305512 /* Exceptions for "EnterpriseApp" folder in "EnterpriseApp" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -52,6 +63,14 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		A71E9B5F2F2C8DE800E5DF1B /* DemoApp */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				A71E9B712F2C8DE800E5DF1B /* Exceptions for "DemoApp" folder in "DemoApp" target */,
+			);
+			path = DemoApp;
+			sourceTree = "<group>";
+		};
 		A7649A6B2F17BC7400305512 /* EnterpriseApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -73,6 +92,16 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		A71E9B5B2F2C8DE800E5DF1B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A71E9B832F2C992000E5DF1B /* CoreNetworking in Frameworks */,
+				A71E9B872F2C992500E5DF1B /* CoreLogging in Frameworks */,
+				A71E9B852F2C992300E5DF1B /* FeatureAuthentication in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A7649A662F17BC7400305512 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -112,6 +141,7 @@
 				A7649A6B2F17BC7400305512 /* EnterpriseApp */,
 				A7649A822F17BC7500305512 /* EnterpriseAppTests */,
 				A7649A8C2F17BC7500305512 /* EnterpriseAppUITests */,
+				A71E9B5F2F2C8DE800E5DF1B /* DemoApp */,
 				A7E47DE02F28B29A00F36631 /* Frameworks */,
 				A7649A6A2F17BC7400305512 /* Products */,
 			);
@@ -123,6 +153,7 @@
 				A7649A692F17BC7400305512 /* EnterpriseApp.app */,
 				A7649A7F2F17BC7500305512 /* EnterpriseAppTests.xctest */,
 				A7649A892F17BC7500305512 /* EnterpriseAppUITests.xctest */,
+				A71E9B5E2F2C8DE800E5DF1B /* DemoApp.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -137,6 +168,31 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		A71E9B5D2F2C8DE800E5DF1B /* DemoApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A71E9B722F2C8DE800E5DF1B /* Build configuration list for PBXNativeTarget "DemoApp" */;
+			buildPhases = (
+				A71E9B5A2F2C8DE800E5DF1B /* Sources */,
+				A71E9B5B2F2C8DE800E5DF1B /* Frameworks */,
+				A71E9B5C2F2C8DE800E5DF1B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				A71E9B5F2F2C8DE800E5DF1B /* DemoApp */,
+			);
+			name = DemoApp;
+			packageProductDependencies = (
+				A71E9B822F2C992000E5DF1B /* CoreNetworking */,
+				A71E9B842F2C992300E5DF1B /* FeatureAuthentication */,
+				A71E9B862F2C992500E5DF1B /* CoreLogging */,
+			);
+			productName = DemoApp;
+			productReference = A71E9B5E2F2C8DE800E5DF1B /* DemoApp.app */;
+			productType = "com.apple.product-type.application";
+		};
 		A7649A682F17BC7400305512 /* EnterpriseApp */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = A7649A922F17BC7500305512 /* Build configuration list for PBXNativeTarget "EnterpriseApp" */;
@@ -224,6 +280,9 @@
 				LastSwiftUpdateCheck = 1600;
 				LastUpgradeCheck = 1600;
 				TargetAttributes = {
+					A71E9B5D2F2C8DE800E5DF1B = {
+						CreatedOnToolsVersion = 16.0;
+					};
 					A7649A682F17BC7400305512 = {
 						CreatedOnToolsVersion = 16.0;
 					};
@@ -259,11 +318,19 @@
 				A7649A682F17BC7400305512 /* EnterpriseApp */,
 				A7649A7E2F17BC7500305512 /* EnterpriseAppTests */,
 				A7649A882F17BC7500305512 /* EnterpriseAppUITests */,
+				A71E9B5D2F2C8DE800E5DF1B /* DemoApp */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		A71E9B5C2F2C8DE800E5DF1B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A7649A672F17BC7400305512 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -288,6 +355,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		A71E9B5A2F2C8DE800E5DF1B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A7649A652F17BC7400305512 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -325,6 +399,60 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		A71E9B6F2F2C8DE800E5DF1B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = DemoApp/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.gokhantaymaz.ios.DemoApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A71E9B702F2C8DE800E5DF1B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = DemoApp/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.gokhantaymaz.ios.DemoApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		A7649A932F17BC7500305512 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -569,6 +697,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		A71E9B722F2C8DE800E5DF1B /* Build configuration list for PBXNativeTarget "DemoApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A71E9B6F2F2C8DE800E5DF1B /* Debug */,
+				A71E9B702F2C8DE800E5DF1B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		A7649A642F17BC7400305512 /* Build configuration list for PBXProject "EnterpriseApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -626,6 +763,21 @@
 		A70551C22F19004E00A45A21 /* CoreNetworking */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = CoreNetworking;
+		};
+		A71E9B822F2C992000E5DF1B /* CoreNetworking */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A70551C12F19004E00A45A21 /* XCLocalSwiftPackageReference "Packages/CoreNetworking" */;
+			productName = CoreNetworking;
+		};
+		A71E9B842F2C992300E5DF1B /* FeatureAuthentication */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A72207DA2F238294006B67B6 /* XCLocalSwiftPackageReference "Packages/FeatureAuthentication" */;
+			productName = FeatureAuthentication;
+		};
+		A71E9B862F2C992500E5DF1B /* CoreLogging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A79765DA2F28C0E9006EB3FC /* XCLocalSwiftPackageReference "Packages/CoreLogging" */;
+			productName = CoreLogging;
 		};
 		A72207DB2F238294006B67B6 /* FeatureAuthentication */ = {
 			isa = XCSwiftPackageProductDependency;

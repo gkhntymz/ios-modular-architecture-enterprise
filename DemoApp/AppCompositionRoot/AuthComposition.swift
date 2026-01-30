@@ -59,8 +59,7 @@ enum AuthComposition {
         )
 
         return AuthenticationFeatureFactory.make(
-            dependencies: deps,
-            output: output
+            dependencies: deps
         )
     }
 

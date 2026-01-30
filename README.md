@@ -190,6 +190,68 @@ Benefits:
 
 ---
 
+### Folder map (source of truth)
+
+EnterpriseApp/
+  AppCompositionRoot/
+    AuthComposition.swift
+  Coordinator/
+    AppCoordinator.swift
+  UI/
+    Demo/
+      AuthDemoViewController.swift
+      ProfileDemoViewController.swift
+
+Packages/
+  FeatureAuthentication/
+    Sources/
+      FeatureAuthentication/
+        AuthenticationFeature.swift
+        AuthenticationFeatureFactory.swift
+        DefaultAuthenticationFeature.swift
+        AuthenticationOutput.swift
+        Models/
+          LoginRequest.swift
+          LoginResponse.swift
+        (No UIKit here)
+
+---
+
+### Public surface vs Internal code
+
+As modules grow, keep a clean separation:
+
+- **Public surface**: minimal types intended for other modules to depend on
+  - protocols (e.g., `AuthenticationFeature`)
+  - factories (e.g., `AuthenticationFeatureFactory`)
+  - output/event contracts (e.g., `AuthenticationOutput`)
+  - request/response models (only if part of the public contract)
+
+- **Internal**: implementation details that can change freely
+  - concrete services, endpoints, mappers
+  - private helpers
+  - feature-internal composition
+
+Rule of thumb: if another module doesn’t need it, it shouldn’t be public.
+
+---
+
+### Feature-to-feature communication
+
+Features never import each other.
+
+Instead, a feature exposes **events** (Outputs), and the **AppCoordinator** decides what screen/feature comes next.
+
+---
+
+### Demo / Debug UI
+
+Demo view controllers live in the app target (EnterpriseApp) and are not part of the Swift Package.
+
+This keeps SwiftPM tests portable (`swift test` runs on macOS) while still allowing quick interactive flows.
+
+---
+
 ## Testing strategy
 
 Testing mirrors the architectural boundaries of the system.
@@ -259,3 +321,11 @@ Key ADRs:
 5. Run tests via:
    - `⌘U` in Xcode, or
    - `swift test` for package-level tests
+
+---
+
+### Demo flow
+
+- App starts with `AppCoordinator.start()`
+- Tap "Simulate Login Success" to navigate Auth → Profile
+- Tap "Logout" to navigate back Profile → Auth
