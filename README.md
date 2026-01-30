@@ -49,6 +49,116 @@ engineering organization.
 
 ---
 
+## Architecture Playbook
+
+This repo demonstrates a modular iOS architecture where **features do the work** and the **app orchestrates navigation**.
+
+### Goals
+
+- Keep feature modules independent (no feature-to-feature imports)
+- Make flows explicit and testable via Coordinator + Output events
+- Centralize policies (baseURL, logging, retry, interceptors) in the App composition root
+- Keep Swift Packages **UIKit-free** so `swift test` can run on CI (macOS)
+
+---
+
+## 1) Boundaries: what lives where?
+
+### Feature modules (Swift Packages)
+**Own:**
+- Use-cases / business rules
+- Network calls via abstractions (e.g., `HTTPClient`, `RequestBuilder`)
+- Feature public API (protocols) and Output event contracts
+
+**Do not own:**
+- Navigation / flow
+- App-wide policies (base URL, retry strategy)
+- UIKit view controllers (unless the module is explicitly iOS-only and CI is configured accordingly)
+
+### App target (EnterpriseApp)
+**Own:**
+- Composition roots (wiring concrete implementations + policies)
+- Coordinators (navigation and flow)
+- Demo / debug UI (e.g., `AuthDemoViewController`, `ProfileDemoViewController`)
+
+---
+
+## 2) Why Coordinator?
+
+Navigation is **not** business logic. It’s a flow concern.
+
+**Coordinator benefits**
+- A single place to understand the app flow
+- Features stay reusable and independent
+- Avoids `import FeatureB` inside FeatureA
+- Easier testing: coordinator can be unit-tested with fake outputs
+
+---
+
+## 3) Why Output / Events?
+
+Features should not know “what happens next”.
+They should only announce what happened.
+
+Example: Authentication feature exposes:
+
+- `onAuthenticated`
+- `onLogout`
+
+The app decides:
+- show Profile
+- show Auth again
+- route to onboarding, etc.
+
+This keeps the **feature boundary** stable while flows evolve.
+
+---
+
+## 4) Why Composition Root?
+
+The app owns concrete choices and policies:
+- `baseURL`
+- interceptors (logging, metrics, auth header)
+- retry policies
+- error mapping policy
+
+So feature modules can stay focused on behavior and contracts.
+
+Example:
+- `AuthComposition.makeAuthFeature(output:)` wires dependencies and passes `AuthenticationOutput`.
+
+---
+
+## 5) Why keep Swift Packages UIKit-free?
+
+CI runs `swift test` on macOS by default. `UIKit` is not available there.
+
+**Rule:** packages that are intended to be tested with SwiftPM should not import UIKit.
+
+If UI is needed for demo:
+- create demo VCs in the app target (EnterpriseApp)
+- or create a separate iOS-only module and configure CI accordingly
+
+---
+
+## 6) Common pitfalls
+
+### “Nothing happens when I navigate”
+Most common root cause: using a `UINavigationController()` that is not the visible root.
+Ensure the app starts with:
+- `window.rootViewController = UINavigationController(...)`
+
+### MainActor and UI factories
+UI creation should happen on the main actor.
+Use `@MainActor` on UI factories if needed.
+
+### Protected `main` branch
+This repo enforces:
+- changes must go through PR
+- required checks must pass
+
+---
+
 ### Dependency flow
 
 The dependency graph follows this direction:
